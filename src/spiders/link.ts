@@ -1,6 +1,10 @@
 import axios from "axios";
 import { load } from "cheerio";
 
+function sanitizeNumeric(value: string) {
+  return value.replace(/[^0-9]/g, "");
+}
+
 export async function scrape(page: number) {
   try {
     const { data } = await axios.get(
@@ -17,10 +21,14 @@ export async function scrape(page: number) {
           photoCount: $(el).find(".listing__photos-count").text(),
           label: $(el).find(".listing__label").text(),
           props: {
-            areaSize: $(el).find(".listing__prop--area-size").text(),
-            plotSize: $(el).find(".listing__prop--plot-size").text(),
-            rooms: $(el).find(".listing__prop--rooms").text(),
-            floor: $(el).find(".listing__prop--floor").text(),
+            areaSize: sanitizeNumeric(
+              $(el).find(".listing__data--area-size").text()
+            ),
+            plotSize: sanitizeNumeric(
+              $(el).find(".listing__data--plot-size").text()
+            ),
+            rooms: sanitizeNumeric($(el).find(".listing__data--rooms").text()),
+            floor: sanitizeNumeric($(el).find(".listing__data--floor").text()),
           },
         };
       })
