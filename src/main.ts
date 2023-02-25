@@ -1,8 +1,9 @@
 import { prisma } from "./db";
+import { scrape } from "./spiders/link";
 
 async function main() {
-  const allProperties = await prisma.link.findMany();
-  console.log(allProperties);
+  // spawn scrapers
+  console.log(await scrape(1));
 }
 
 main()

@@ -19,11 +19,15 @@ model Link {
 }
 
 model Property {
-  id          Int      @id @default(autoincrement())
-  createdAt   DateTime @default(now())
-  description String?
+  id          Int       @id @default(autoincrement())
+  createdAt   DateTime  @default(now())
+  lastVisited DateTime?
+  rawHtml     String // @db.Text
   url         String
-  html        String // @db.Text
   title       String
-  metadata    String // @db.Json
+  price       String?
+  plotSize    String?
+  areaSize    String?
+  rooms       String?
+  floor       String?
 }
