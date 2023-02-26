@@ -10,20 +10,12 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model Link {
-  id          Int       @id @default(autoincrement())
-  createdAt   DateTime  @default(now())
-  lastVisited DateTime?
-  description String?
-  url         String
-}
-
 model Property {
   id          Int       @id @default(autoincrement())
   createdAt   DateTime  @default(now())
   lastVisited DateTime?
   rawHtml     String // @db.Text
-  url         String
+  url         String    @unique
   title       String
   price       String?
   plotSize    String?
