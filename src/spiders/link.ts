@@ -1,8 +1,17 @@
 import axios from "axios";
 import { load } from "cheerio";
+import { pipe } from "ramda";
+import { prisma } from "../db";
 
 function sanitizeNumeric(value: string) {
-  return value.replace(/[^0-9]/g, "");
+  return value.replace(/[^0-9]/g, "").trim();
+}
+
+function sanitizePage(value: string) {
+  return value.split("/").map(pipe(sanitizeNumeric, Number)) as [
+    number,
+    number
+  ];
 }
 
 export async function scrape(page: number) {
@@ -12,7 +21,7 @@ export async function scrape(page: number) {
     );
     const $ = load(data);
 
-    return $("[data-id].listing")
+    const listings = $("[data-id].listing")
       .map((_i, el) => {
         return {
           url: $(el).find("a.listing__link").attr("href"),
@@ -33,6 +42,41 @@ export async function scrape(page: number) {
         };
       })
       .toArray();
+
+    const properties = await prisma.$transaction(
+      listings.map((listing) => {
+        const properties = {
+          url: listing.url!,
+          rawHtml: data,
+          title: listing.address,
+          price: listing.price,
+          areaSize: listing.props.areaSize,
+          plotSize: listing.props.plotSize,
+          floor: listing.props.floor,
+          rooms: listing.props.rooms,
+        };
+
+        return prisma.property.upsert({
+          create: properties,
+          update: properties,
+          where: {
+            url: listing.url!,
+          },
+        });
+      })
+    );
+
+    const [currentPage, totalPages] = sanitizePage(
+      $(".pagination__page-number").text()
+    );
+
+    return {
+      properties,
+      page: {
+        currentPage,
+        totalPages,
+      },
+    };
   } catch (e) {
     console.error(e);
   }

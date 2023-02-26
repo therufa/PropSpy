@@ -6,20 +6,19 @@ generator client {
 }
 
 datasource db {
-  provider = "sqlite"
+  provider = "postgresql"
   url      = env("DATABASE_URL")
 }
 
 model Property {
-  id          Int       @id @default(autoincrement())
+  url         String    @id
   createdAt   DateTime  @default(now())
   lastVisited DateTime?
-  rawHtml     String // @db.Text
-  url         String    @unique
-  title       String
-  price       String?
-  plotSize    String?
-  areaSize    String?
-  rooms       String?
-  floor       String?
+  rawHtml     String    @db.Text
+  address     String?   @db.Text
+  price       String?   @db.Text
+  plotSize    String?   @db.Text
+  areaSize    String?   @db.Text
+  rooms       String?   @db.Text
+  floor       String?   @db.Text
 }
