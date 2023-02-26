@@ -1,6 +1,10 @@
 import { prisma } from "./db";
+import { ingatlanCom, jofogasHu } from "./crawlers/index";
 
-async function main() {}
+async function main() {
+  console.log(await ingatlanCom.getStats());
+  console.log(await jofogasHu.getStats());
+}
 
 main()
   .then(() => {
