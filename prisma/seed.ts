@@ -5,12 +5,14 @@ async function main() {
     data: [
       {
         payload: {
-          module: "ingatlan.com/init",
+          command: "init",
+          module: "ingatlan.com/stats",
         },
       },
       {
         payload: {
-          module: "ingatlan.jofogas.com/init",
+          command: "init",
+          module: "ingatlan.jofogas.com/stats",
         },
       },
     ],
