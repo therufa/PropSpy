@@ -48,7 +48,7 @@ export async function scrape(page: number) {
         const properties = {
           url: listing.url!,
           rawHtml: data,
-          title: listing.address,
+          address: listing.address,
           price: listing.price,
           areaSize: listing.props.areaSize,
           plotSize: listing.props.plotSize,

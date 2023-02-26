@@ -1,16 +1,18 @@
 import { prisma } from "./db";
-import { scrape } from "./spiders/link";
+import { scrape as scrapeLink } from "./spiders/link";
+
+async function scrape(p: number) {
+  await new Promise((resolve) => setTimeout(resolve, Math.random() * 10000));
+  return scrapeLink(p);
+}
 
 async function main() {
   const {
     page: { totalPages },
   } = (await scrape(1)) ?? { page: { totalPages: 0 } };
 
-  // spawn a new scraper for every 10 pages
-  const chunks = Array.from({ length: totalPages / 10 }, (_, i) => i * 10 + 1);
-
-  for (const chunk of chunks) {
-    await Promise.all(Array.from({ length: 10 }, (_, i) => scrape(chunk + i)));
+  for (let page = 320; page < Math.ceil(totalPages / 10); page + 10) {
+    await Promise.all(Array.from({ length: 10 }, (_, i) => scrape(page + i)));
   }
 }
 
