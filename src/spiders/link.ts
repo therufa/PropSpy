@@ -47,13 +47,6 @@ export async function scrape(page: number) {
       listings.map((listing) => {
         const properties = {
           url: listing.url!,
-          rawHtml: data,
-          address: listing.address,
-          price: listing.price,
-          areaSize: listing.props.areaSize,
-          plotSize: listing.props.plotSize,
-          floor: listing.props.floor,
-          rooms: listing.props.rooms,
         };
 
         return prisma.property.upsert({
